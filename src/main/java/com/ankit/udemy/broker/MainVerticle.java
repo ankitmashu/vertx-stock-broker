@@ -37,8 +37,7 @@ public class MainVerticle extends AbstractVerticle {
       LOG.error("Route Error:", errorContext.failure());
       errorContext.response()
         .setStatusCode(500)
-        .end(new JsonObject().put("message","sometihing went wrong: (").toBuffer());
-
+        .end(new JsonObject().put("message","something went wrong: (").toBuffer());
     });
     AssestsRestApi.attach(restApi);
     vertx.createHttpServer()
