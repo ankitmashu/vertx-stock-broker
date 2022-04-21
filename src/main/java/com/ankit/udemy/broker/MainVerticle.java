@@ -28,6 +28,18 @@ public class MainVerticle extends AbstractVerticle {
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
     final Router restApi= Router.router(vertx);
+    restApi.route().failureHandler(errorContext->{
+      if(errorContext.response().ended())
+      {
+        //Ignore Completed Response
+        return;
+      }
+      LOG.error("Route Error:", errorContext.failure());
+      errorContext.response()
+        .setStatusCode(500)
+        .end(new JsonObject().put("message","sometihing went wrong: (").toBuffer());
+
+    });
     AssestsRestApi.attach(restApi);
     vertx.createHttpServer()
       .requestHandler(restApi)

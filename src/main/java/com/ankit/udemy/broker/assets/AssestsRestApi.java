@@ -13,10 +13,10 @@ public class AssestsRestApi {
     parents.get("/assets").handler(context->{
       final JsonArray response=new JsonArray();
       response
-        .add(new JsonObject().put("symbol","AAPL"))
-        .add(new JsonObject().put("symbol","AMZN"))
-        .add(new JsonObject().put("symbol","NFLX"))
-        .add(new JsonObject().put("symbol","TSLA"));
+        .add(new Asset("AAPL"))
+        .add(new Asset("AMZN"))
+        .add(new Asset("NFLX"))
+        .add(new Asset("TSLA"));
       LOG.info("Path {} responds with {}", context.normalizedPath(),response.encode());
       context.response().end(response.toBuffer());
     });
