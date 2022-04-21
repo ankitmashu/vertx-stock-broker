@@ -4,6 +4,7 @@ import com.ankit.udemy.broker.MainVerticle;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,9 +18,8 @@ public class WatchListRestApi {
     final HashMap<UUID,WatchList> watchListPerAccount= new HashMap<UUID, WatchList>();
     final String path="/account/watchlist/:accountId";
     parent.get(path).handler(context->{
-     var accountId =context.pathParam("accountId");
-  LOG.debug("{} for account {}",context.normalizedPath(),accountId);
-     var watchList = Optional.ofNullable(watchListPerAccount.get(UUID.fromString(accountId)));
+      String accountId = getAccountId(context);
+      var watchList = Optional.ofNullable(watchListPerAccount.get(UUID.fromString(accountId)));
       if(watchList.isEmpty()) {
         context.response()
           .setStatusCode(HttpResponseStatus.NOT_FOUND.code())
@@ -34,8 +34,7 @@ public class WatchListRestApi {
     });
 
     parent.put(path).handler(context->{
-      var accountId =context.pathParam("accountId");
-      LOG.debug("{} for account {}",context.normalizedPath(),accountId);
+      String accountId = getAccountId(context);
 
       var json=context.getBodyAsJson();
       WatchList watchList = json.mapTo(WatchList.class);
@@ -43,9 +42,20 @@ public class WatchListRestApi {
       context.response().end(json.toBuffer());
     });
     parent.delete(path).handler(context->{
-
+    String acountId=getAccountId(context);
+      WatchList deleted = watchListPerAccount.remove(UUID.fromString(acountId));
+      LOG.info("Deleted: {}, Remaining: {}",deleted,watchListPerAccount.values());
+      context.response()
+      .end(deleted.toJsonObject().toBuffer());
     });
 
+
+  }
+
+  private static String getAccountId(RoutingContext context) {
+    var accountId = context.pathParam("accountId");
+    LOG.debug("{} for account {}", context.normalizedPath(),accountId);
+    return accountId;
   }
 
 }
