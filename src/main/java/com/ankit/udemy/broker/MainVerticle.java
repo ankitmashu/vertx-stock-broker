@@ -2,6 +2,7 @@ package com.ankit.udemy.broker;
 
 import com.ankit.udemy.broker.assets.AssestsRestApi;
 import com.ankit.udemy.broker.quotes.QuotesRestApi;
+import com.ankit.udemy.broker.watchlist.WatchListRestApi;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
@@ -10,6 +11,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.BodyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,11 +35,17 @@ public class MainVerticle extends AbstractVerticle {
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
     final Router restApi= Router.router(vertx);
-    restApi.route().failureHandler(handleFailure());
+    restApi.route()
+      .handler(BodyHandler.create()
+       //// .setBodyLimit(1024)
+        //.setHandleFileUploads(true)
+      )
+      .failureHandler(handleFailure());
     AssestsRestApi.attach(restApi);
 
     QuotesRestApi.attach(restApi);
 
+    WatchListRestApi.attach(restApi);
 
     vertx.createHttpServer()
       .requestHandler(restApi)
