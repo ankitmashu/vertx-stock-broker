@@ -1,12 +1,7 @@
 package com.ankit.udemy.broker.assets;
 
+import lombok.Value;
+@Value
 public class Asset {
-  private final String name;
-  public Asset(String name) {
-    this.name=name;
-  }
-
-  public String getName() {
-    return name;
-  }
+  String name;
 }

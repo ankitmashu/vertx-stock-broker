@@ -1,4 +1,4 @@
-package com.ankit.udemy.vertx_stock_broker;
+package com.ankit.udemy.broker;
 
 import io.vertx.core.Vertx;
 import io.vertx.junit5.VertxExtension;
