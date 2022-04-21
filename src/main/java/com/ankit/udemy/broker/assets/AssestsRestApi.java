@@ -12,19 +12,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AssestsRestApi {
-  private static final Logger LOG= LoggerFactory.getLogger(AssestsRestApi.class);
  public static final List<String> ASSETS= Arrays.asList("AAPL","AMZN","FB","GOOG","NFLX","MSFT","TLSA");
   public static void attach(Router parents)
   {
-    parents.get("/assets").handler(context->{
-
-      final JsonArray response=new JsonArray();
-      ASSETS.stream().map(Asset::new).forEach(response::add);
-      LOG.info("Path {} responds with {}", context.normalizedPath(),response.encode());
-      context.response()
-        .putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON)
-        .putHeader("my-header","my-value")
-        .end(response.toBuffer());
-    });
+    parents.get("/assets").handler(new GetAssetHandler());
   }
 }
