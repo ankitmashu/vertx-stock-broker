@@ -3,11 +3,7 @@ package com.ankit.udemy.broker;
 import com.ankit.udemy.broker.assets.AssestsRestApi;
 import com.ankit.udemy.broker.quotes.QuotesRestApi;
 import com.ankit.udemy.broker.watchlist.WatchListRestApi;
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Handler;
-import io.vertx.core.Promise;
-import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonArray;
+import io.vertx.core.*;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -24,52 +20,25 @@ public class MainVerticle extends AbstractVerticle {
     vertx.exceptionHandler(error->
      LOG.error("Unhandled: ", error)
     );
-    vertx.deployVerticle(new MainVerticle(), ar->{
-      if(ar.failed()){
-        LOG.error("Failed to depply: ",ar.cause());
-        return;
+    vertx.deployVerticle(new MainVerticle())
+      .onFailure(err->LOG.error("Failed to depoly: ",err))
+      .onSuccess(id->{
+        LOG.info("Deployed {} with id {}",RestApiVerticle.class.getSimpleName(),id);
+        });
       }
-      LOG.info("Deployed {}", MainVerticle.class.getName());
-  });
-  }
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
-    final Router restApi= Router.router(vertx);
-    restApi.route()
-      .handler(BodyHandler.create()
-       //// .setBodyLimit(1024)
-        //.setHandleFileUploads(true)
-      )
-      .failureHandler(handleFailure());
-    AssestsRestApi.attach(restApi);
-
-    QuotesRestApi.attach(restApi);
-
-    WatchListRestApi.attach(restApi);
-
-    vertx.createHttpServer()
-      .requestHandler(restApi)
-      .exceptionHandler(error->LOG.error("HTTPS SERVER ERROR",error))
-      .listen(PORT, http -> {
-      if (http.succeeded()) {
+    vertx.deployVerticle(RestApiVerticle.class.getName(),
+        new DeploymentOptions().setInstances(processor()))
+      .onFailure(startPromise::fail)
+      .onSuccess(id->{
+        LOG.info("Deployed {} with id {}",RestApiVerticle.class.getSimpleName(),id);
         startPromise.complete();
-        LOG.info("HTTP server started on port 8888");
-      } else {
-        startPromise.fail(http.cause());
-      }
-    });
+      });
   }
 
-  private Handler<RoutingContext> handleFailure() {
-    return errorContext -> {
-      if (errorContext.response().ended()) {
-        //Ignore Completed Response
-        return;
-      }
-      LOG.error("Route Error:", errorContext.failure());
-      errorContext.response()
-        .setStatusCode(500)
-        .end(new JsonObject().put("message", "something went wrong: (").toBuffer());
-    };
+  private int processor() {
+    return Math.max(1,Runtime.getRuntime().availableProcessors());
   }
+
 }
