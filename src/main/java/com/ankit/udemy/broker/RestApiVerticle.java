@@ -1,6 +1,8 @@
 package com.ankit.udemy.broker;
 
 import com.ankit.udemy.broker.assets.AssestsRestApi;
+import com.ankit.udemy.broker.config.BrokerConfig;
+import com.ankit.udemy.broker.config.ConfigLoader;
 import com.ankit.udemy.broker.quotes.QuotesRestApi;
 import com.ankit.udemy.broker.watchlist.WatchListRestApi;
 import io.vertx.core.AbstractVerticle;
@@ -19,9 +21,14 @@ public class RestApiVerticle extends AbstractVerticle {
 
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
-      startHttpServerAndAttachRoutes(startPromise);
-  }
-    private void startHttpServerAndAttachRoutes(Promise<Void> startPromise) {
+    ConfigLoader.load(vertx)
+        .onFailure(startPromise::fail)
+          .onSuccess(configuration->{
+            LOG.info("Retrieved Configuration: {}",configuration);
+            startHttpServerAndAttachRoutes(startPromise,configuration);
+          });
+    }
+    private void startHttpServerAndAttachRoutes(Promise<Void> startPromise, final BrokerConfig configuration) {
       final Router restApi= Router.router(vertx);
       restApi.route()
         .handler(BodyHandler.create()
@@ -36,10 +43,10 @@ public class RestApiVerticle extends AbstractVerticle {
       vertx.createHttpServer()
         .requestHandler(restApi)
         .exceptionHandler(error->LOG.error("HTTPS SERVER ERROR",error))
-        .listen(MainVerticle.PORT, http -> {
+        .listen(configuration.getServerPort(), http -> {
           if (http.succeeded()) {
             startPromise.complete();
-            LOG.info("HTTP server started on port 8888");
+            LOG.info("HTTP server started on port {}",configuration.getServerPort());
           } else {
             startPromise.fail(http.cause());
           }
