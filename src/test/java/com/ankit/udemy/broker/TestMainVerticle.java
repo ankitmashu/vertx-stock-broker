@@ -1,5 +1,7 @@
 package com.ankit.udemy.broker;
 
+import com.ankit.udemy.broker.assets.AbstractRestApiTest;
+import com.ankit.udemy.broker.config.ConfigLoader;
 import io.vertx.core.Vertx;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
@@ -8,12 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(VertxExtension.class)
-public class TestMainVerticle {
-
-  @BeforeEach
-  void deploy_verticle(Vertx vertx, VertxTestContext testContext) {
-    vertx.deployVerticle(new MainVerticle(), testContext.succeeding(id -> testContext.completeNow()));
-  }
+public class TestMainVerticle extends AbstractRestApiTest {
 
   @Test
   void verticle_deployed(Vertx vertx, VertxTestContext testContext) throws Throwable {

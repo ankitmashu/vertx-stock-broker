@@ -1,6 +1,7 @@
 package com.ankit.udemy.broker.assets;
 
 import com.ankit.udemy.broker.MainVerticle;
+import com.ankit.udemy.broker.config.ConfigLoader;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
@@ -18,16 +19,12 @@ import org.slf4j.LoggerFactory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(VertxExtension.class)
-public class TestAssetRestApi {
-  private static final Logger LOG = LoggerFactory.getLogger(TestAssetRestApi.class);
-  @BeforeEach
-  void deploy_verticle(Vertx vertx, VertxTestContext testContext) {
-    vertx.deployVerticle(new MainVerticle(), testContext.succeeding(id -> testContext.completeNow()));
-  }
+public class TestAssetRestApi extends AbstractRestApiTest {
 
+  private static final Logger LOG = LoggerFactory.getLogger(TestAssetRestApi.class);
   @Test
   void returns_all_assets(Vertx vertx, VertxTestContext context) throws Throwable {
-    WebClient client = WebClient.create(vertx, new WebClientOptions().setDefaultPort(MainVerticle.PORT));
+    WebClient client = WebClient.create(vertx, new WebClientOptions().setDefaultPort(TEST_SERVER_PORT));
     client.get("/assets")
       .send()
       .onComplete(context.succeeding(response->{

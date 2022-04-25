@@ -30,9 +30,16 @@ public class ConfigLoader {
     var envStore = new ConfigStoreOptions()
       .setType("env")
       .setConfig(new JsonObject().put("keys",exposedKeys));
+
+    var propertyStore= new ConfigStoreOptions()
+      .setType("sys")
+      .setConfig(new JsonObject().put("cache",false));
     var retriever = ConfigRetriever.create(vertx,
     new ConfigRetrieverOptions()
+
+      //Order defines overload rule which server port works.
       .addStore(envStore)
+      .addStore(propertyStore)
     );
 
     return retriever.getConfig().map(BrokerConfig::from);

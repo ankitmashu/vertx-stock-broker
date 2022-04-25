@@ -1,6 +1,7 @@
 package com.ankit.udemy.broker.quotes;
 
 import com.ankit.udemy.broker.MainVerticle;
+import com.ankit.udemy.broker.assets.AbstractRestApiTest;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -17,16 +18,12 @@ import org.slf4j.LoggerFactory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(VertxExtension.class)
-public class TestQuotesRestApi {
+public class TestQuotesRestApi extends AbstractRestApiTest {
   private static final Logger LOG = LoggerFactory.getLogger(TestQuotesRestApi.class);
-  @BeforeEach
-  void deploy_verticle(Vertx vertx, VertxTestContext testContext) {
-    vertx.deployVerticle(new MainVerticle(), testContext.succeeding(id -> testContext.completeNow()));
-  }
 
   @Test
   void returns_quote_for_asset(Vertx vertx, VertxTestContext context) throws Throwable {
-    WebClient client = WebClient.create(vertx, new WebClientOptions().setDefaultPort(MainVerticle.PORT));
+    WebClient client = webClient(vertx);
     client.get("/quotes/AMZN")
       .send()
       .onComplete(context.succeeding(response->{
@@ -38,9 +35,13 @@ public class TestQuotesRestApi {
       }));
   }
 
+  private WebClient webClient(Vertx vertx) {
+    return WebClient.create(vertx, new WebClientOptions().setDefaultPort(TEST_SERVER_PORT));
+  }
+
   @Test
   void returns_not_found_for_unkown_asset(Vertx vertx, VertxTestContext context) throws Throwable {
-    WebClient client = WebClient.create(vertx, new WebClientOptions().setDefaultPort(MainVerticle.PORT));
+    WebClient client = webClient(vertx);
     client.get("/quotes/UNKNOWN")
       .send()
       .onComplete(context.succeeding(response->{

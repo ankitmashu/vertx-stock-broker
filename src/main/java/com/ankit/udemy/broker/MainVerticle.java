@@ -1,6 +1,7 @@
 package com.ankit.udemy.broker;
 
 import com.ankit.udemy.broker.assets.AssestsRestApi;
+import com.ankit.udemy.broker.config.ConfigLoader;
 import com.ankit.udemy.broker.quotes.QuotesRestApi;
 import com.ankit.udemy.broker.watchlist.WatchListRestApi;
 import io.vertx.core.*;
@@ -13,9 +14,10 @@ import org.slf4j.LoggerFactory;
 
 public class MainVerticle extends AbstractVerticle {
   private static final Logger LOG = LoggerFactory.getLogger(MainVerticle.class);
-  public static final int PORT = 8888;
+
 
   public static void main(String[] args) {
+    //System.setProperty(ConfigLoader.SERVER_PORT,"9000");
     Vertx vertx=Vertx.vertx();
     vertx.exceptionHandler(error->
      LOG.error("Unhandled: ", error)
