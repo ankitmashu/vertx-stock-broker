@@ -46,8 +46,8 @@ public class ConfigLoader {
 
       //Order defines overload rule which server port works.
       .addStore(yamlStore)
-      .addStore(envStore)
       .addStore(propertyStore)
+      .addStore(envStore)
     );
 
     return retriever.getConfig().map(BrokerConfig::from);

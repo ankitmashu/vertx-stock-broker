@@ -23,18 +23,26 @@ public class MainVerticle extends AbstractVerticle {
      LOG.error("Unhandled: ", error)
     );
     vertx.deployVerticle(new MainVerticle())
-      .onFailure(err->LOG.error("Failed to depoly: ",err))
+      .onFailure(err->LOG.error("Failed to deploy: ",err))
       .onSuccess(id->{
         LOG.info("Deployed {} with id {}",RestApiVerticle.class.getSimpleName(),id);
         });
       }
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
-    vertx.deployVerticle(RestApiVerticle.class.getName(),
+    vertx.deployVerticle(VersionInfoVerticle.class.getName())
+        .onFailure(startPromise::fail)
+      .onSuccess(id ->LOG.info("Deployed {} with id {}", VersionInfoVerticle.class.getSimpleName(), id))
+          .compose(next-> deployRestApiVerticle(startPromise)
+          );
+  }
+
+  private Future<String> deployRestApiVerticle(Promise<Void> startPromise) {
+    return vertx.deployVerticle(RestApiVerticle.class.getName(),
         new DeploymentOptions().setInstances(processor()))
       .onFailure(startPromise::fail)
-      .onSuccess(id->{
-        LOG.info("Deployed {} with id {}",RestApiVerticle.class.getSimpleName(),id);
+      .onSuccess(id -> {
+        LOG.info("Deployed {} with id {}", RestApiVerticle.class.getSimpleName(), id);
         startPromise.complete();
       });
   }
