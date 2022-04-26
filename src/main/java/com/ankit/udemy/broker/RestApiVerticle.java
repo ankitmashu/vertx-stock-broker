@@ -12,13 +12,14 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.pgclient.PgConnectOptions;
+import io.vertx.pgclient.PgPool;
+import io.vertx.sqlclient.PoolOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RestApiVerticle extends AbstractVerticle {
   private static final Logger LOG = LoggerFactory.getLogger(MainVerticle.class);
-
-
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
     ConfigLoader.load(vertx)
@@ -28,7 +29,11 @@ public class RestApiVerticle extends AbstractVerticle {
             startHttpServerAndAttachRoutes(startPromise,configuration);
           });
     }
-    private void startHttpServerAndAttachRoutes(Promise<Void> startPromise, final BrokerConfig configuration) {
+    private void startHttpServerAndAttachRoutes(Promise<Void> startPromise,
+                                                final BrokerConfig configuration) {
+    //Create DB POOL , one pool for each rest api verticle
+      PgPool db =createDbPool(configuration);
+
       final Router restApi= Router.router(vertx);
       restApi.route()
         .handler(BodyHandler.create()
@@ -36,7 +41,7 @@ public class RestApiVerticle extends AbstractVerticle {
           //.setHandleFileUploads(true)
         )
         .failureHandler(handleFailure());
-      AssestsRestApi.attach(restApi);
+      AssestsRestApi.attach(restApi,);
       QuotesRestApi.attach(restApi);
       WatchListRestApi.attach(restApi);
 
@@ -53,7 +58,19 @@ public class RestApiVerticle extends AbstractVerticle {
         });
     }
 
-    private Handler<RoutingContext> handleFailure() {
+  private PgPool createDbPool(final BrokerConfig configuration) {
+    final PgConnectOptions connectOptions = new PgConnectOptions()
+      .setHost(configuration.getDbConfig().getHost())
+      .setPort(configuration.getDbConfig().getPort())
+      .setDatabase(configuration.getDbConfig().getDatabase())
+      .setUser(configuration.getDbConfig().getDatabase())
+      .setPassword(configuration.getDbConfig().getPassword())
+      ;
+    final var poolOptions= new PoolOptions().setMaxSize(4);
+    return PgPool.pool(vertx, connectOptions, poolOptions);
+  }
+
+  private Handler<RoutingContext> handleFailure() {
       return errorContext -> {
         if (errorContext.response().ended()) {
           //Ignore Completed Response

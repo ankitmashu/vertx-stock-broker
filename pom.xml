@@ -64,7 +64,12 @@
       <version>42.2.25</version>
     </dependency>
     <!-- database till above-->
-
+    <!-- reactive postgre client-->
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-pg-client</artifactId>
+      <version>4.2.7</version>
+    </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-config</artifactId>
