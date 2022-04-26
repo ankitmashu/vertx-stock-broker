@@ -59,7 +59,7 @@ public class MainVerticle extends AbstractVerticle {
   }
 
   private int processor() {
-    return Math.max(1,Runtime.getRuntime().availableProcessors());
+    return Math.max(1,Runtime.getRuntime().availableProcessors()/2);
   }
 
 }

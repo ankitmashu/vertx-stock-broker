@@ -23,7 +23,7 @@
   <component name="DBNavigator.Project.DatabaseBrowserManager">
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
-    <show-object-properties value="true" />
+    <show-object-properties value="false" />
     <loaded-nodes />
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
@@ -38,7 +38,9 @@
     <connection id="7a4e83f9-6244-4256-848e-b37592f03bb9" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="7a4e83f9-6244-4256-848e-b37592f03bb9" dataset="broker.quotes" active-filter-id="" />
     <filter-actions connection-id="7a4e83f9-6244-4256-848e-b37592f03bb9" dataset="broker.flyway_schema_history" active-filter-id="" />
+    <filter-actions connection-id="7a4e83f9-6244-4256-848e-b37592f03bb9" dataset="broker.assets" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
