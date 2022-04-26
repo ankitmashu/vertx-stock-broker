@@ -1,7 +1,6 @@
 package com.ankit.udemy.broker.watchlist;
 
-import com.ankit.udemy.broker.MainVerticle;
-import com.ankit.udemy.broker.assets.AbstractRestApiTest;
+import com.ankit.udemy.broker.AbstractRestApiTest;
 import com.ankit.udemy.broker.assets.Asset;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -10,13 +9,11 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.UUID;
 

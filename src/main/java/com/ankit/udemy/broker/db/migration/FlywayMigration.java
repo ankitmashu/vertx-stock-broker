@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class FlywayMigration {
   private static final Logger LOG= LoggerFactory.getLogger(FlywayMigration.class);
   public static Future<Void> migrate(Vertx vertx, DbConfig dbConfig) {
-
+    LOG.debug("DB config: {}",dbConfig);
     return vertx.<Void>executeBlocking(promise -> {
       execute(dbConfig);
       promise.complete();

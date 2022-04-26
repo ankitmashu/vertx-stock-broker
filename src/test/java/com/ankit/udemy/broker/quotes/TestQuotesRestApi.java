@@ -1,15 +1,12 @@
 package com.ankit.udemy.broker.quotes;
 
-import com.ankit.udemy.broker.MainVerticle;
-import com.ankit.udemy.broker.assets.AbstractRestApiTest;
+import com.ankit.udemy.broker.AbstractRestApiTest;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
