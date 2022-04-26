@@ -51,6 +51,20 @@
       <artifactId>vertx-web-client</artifactId>
       <version>4.2.7</version>
     </dependency>
+    <!-- database-->
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <version>8.5.9</version>
+    </dependency>
+    <!--jdbc driver https://mvnrepository.com/artifact/org.postgresql/postgresql-->
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.2.25</version>
+    </dependency>
+    <!-- database till above-->
+
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-config</artifactId>
