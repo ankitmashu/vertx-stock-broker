@@ -15,7 +15,7 @@ public class BrokerConfig {
   String version;
 DbConfig dbConfig;
   public static BrokerConfig from(final JsonObject config){
-   final Integer serverPort =9000;//config.getInteger(ConfigLoader.SERVER_PORT);
+   final Integer serverPort =8888;//config.getInteger(ConfigLoader.SERVER_PORT);
    if(Objects.isNull(serverPort))
    {
      throw new RuntimeException(ConfigLoader.SERVER_PORT + " not configured!");
