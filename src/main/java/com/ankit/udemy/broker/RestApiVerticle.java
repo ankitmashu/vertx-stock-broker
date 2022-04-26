@@ -41,7 +41,7 @@ public class RestApiVerticle extends AbstractVerticle {
           //.setHandleFileUploads(true)
         )
         .failureHandler(handleFailure());
-      AssestsRestApi.attach(restApi,);
+      AssestsRestApi.attach(restApi, db);
       QuotesRestApi.attach(restApi);
       WatchListRestApi.attach(restApi);
 
@@ -59,11 +59,11 @@ public class RestApiVerticle extends AbstractVerticle {
     }
 
   private PgPool createDbPool(final BrokerConfig configuration) {
-    final PgConnectOptions connectOptions = new PgConnectOptions()
+    final var connectOptions = new PgConnectOptions()
       .setHost(configuration.getDbConfig().getHost())
       .setPort(configuration.getDbConfig().getPort())
       .setDatabase(configuration.getDbConfig().getDatabase())
-      .setUser(configuration.getDbConfig().getDatabase())
+      .setUser(configuration.getDbConfig().getUser())
       .setPassword(configuration.getDbConfig().getPassword())
       ;
     final var poolOptions= new PoolOptions().setMaxSize(4);
