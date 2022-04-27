@@ -44,7 +44,7 @@ public class RestApiVerticle extends AbstractVerticle {
         .failureHandler(handleFailure());
       AssestsRestApi.attach(restApi, db);
       QuotesRestApi.attach(restApi,db);
-      WatchListRestApi.attach(restApi);
+      WatchListRestApi.attach(restApi,db);
 
       vertx.createHttpServer()
         .requestHandler(restApi)
