@@ -32,7 +32,9 @@
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="7a4e83f9-6244-4256-848e-b37592f03bb9" object-ref="schemas/broker/tables/watchlist" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="7a4e83f9-6244-4256-848e-b37592f03bb9" />
@@ -44,11 +46,7 @@
       </filter>
     </filter-actions>
     <filter-actions connection-id="7a4e83f9-6244-4256-848e-b37592f03bb9" dataset="broker.flyway_schema_history" active-filter-id="" />
-    <filter-actions connection-id="7a4e83f9-6244-4256-848e-b37592f03bb9" dataset="broker.watchlist" active-filter-id="">
-      <filter id="a558d58a-05df-49c8-bf4f-3bb0e0d9e7c6" name="Filter 1" temporary="false" custom-name="false" type="basic" join-type="AND">
-        <condition column="account_id" operator="=" value="" active="true" />
-      </filter>
-    </filter-actions>
+    <filter-actions connection-id="7a4e83f9-6244-4256-848e-b37592f03bb9" dataset="broker.watchlist" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="7a4e83f9-6244-4256-848e-b37592f03bb9" dataset="broker.assets" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
