@@ -26,7 +26,10 @@ public class FlywayMigration {
   }
 
   private static void execute(DbConfig dbConfig) {
-    final String jdbcUrl=String.format("jdbc:postgresql://%s:%d/%s",
+     var database="postgresql";
+    //var database="mysql";
+    final String jdbcUrl=String.format("jdbc:%s://%s:%d/%s",
+      database,
       dbConfig.getHost(),
       dbConfig.getPort(),
       dbConfig.getDatabase());
