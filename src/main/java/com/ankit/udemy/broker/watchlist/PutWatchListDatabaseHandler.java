@@ -2,14 +2,19 @@ package com.ankit.udemy.broker.watchlist;
 
 import com.ankit.udemy.broker.db.DbResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.sqlclient.Pool;
+import io.vertx.sqlclient.SqlConnection;
+import io.vertx.sqlclient.SqlResult;
 import io.vertx.sqlclient.templates.SqlTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -34,16 +39,36 @@ public class PutWatchListDatabaseHandler implements Handler<RoutingContext> {
           parameters.put("asset",asset.getName());
           return  parameters;
         }).collect(Collectors.toList());
+
+     //Transaction
+    db.withTransaction(client->{
+      //1- Delete all for accountid
+     return SqlTemplate.forUpdate(client,"DELETE FROM broker.watchlist w where w.account_id= #{account_id}")
+        .execute(Collections.singletonMap("account_id",accountId))
+        .onFailure(DbResponse.errorHandler(context,"Failed to clear watchlist for account id "+ accountId))
+        .compose(deletionDone->{
+          //2- Add all for accountid
+          //throw new NullPointerException("Test transaction");
+          return addAllForAccountId(client,context, parameterBatch);
+        })
+       .onFailure(DbResponse.errorHandler(context,"Failed to update watchlist for account id "+ accountId))
+       .onSuccess(result ->
+       //3- Both Succeeded
+        context.response()
+          .setStatusCode(HttpResponseStatus.NO_CONTENT.code())
+          .end()
+     );
+    });
 //only adding is possible -> Enteries for watch list never removed
-      SqlTemplate.forUpdate(db,
-          "INSERT INTO broker.watchlist VALUES (#{account_id},#{asset})" +
+  }
+
+  private Future<SqlResult<Void>> addAllForAccountId(SqlConnection client, RoutingContext context, List<Map<String, Object>> parameterBatch) {
+    return SqlTemplate.forUpdate(client,
+        "INSERT INTO broker.watchlist VALUES (#{account_id},#{asset})" +
           " ON CONFLICT (account_id, asset) DO NOTHING")
-        .executeBatch(parameterBatch)
-        .onFailure(DbResponse.errorHandler(context,"Failed to insert into watchlist"))
-        .onSuccess(result->
-            context.response()
-              .setStatusCode(HttpResponseStatus.NO_CONTENT.code())
-              .end()
-        );
+      .executeBatch(parameterBatch)
+      .onFailure(DbResponse.errorHandler(context, "Failed to insert into watchlist"))
+
+      ;
   }
 }
