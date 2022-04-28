@@ -9,5 +9,8 @@ Content-Type: application/json
 {
 "name": "TSLA"
 }
+{
+"name": "NFLX"
+}
 ]
 }
